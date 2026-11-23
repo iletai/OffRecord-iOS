@@ -26,6 +26,10 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>LEGAL_PRIVACY_URL</key>
+	<string>https://apps-site-six.vercel.app/apps/offrecord/privacy</string>
+	<key>LEGAL_TERMS_URL</key>
+	<string>https://www.apple.com/legal/internet-services/itunes/dev/stdeula/</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>OffRecord records the session with the microphone. The audio is transcribed on this iPhone and is never uploaded.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>

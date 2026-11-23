@@ -31,4 +31,5 @@ OffRecord Pro is a subscription: $19.99 per month or $149.99 per year, with a 7-
 
 If you record sessions with clients, check the consent rules where you practice. OffRecord reduces the risk of a data leak; it does not replace your legal or professional obligations.
 
-The privacy policy and terms of use are linked in App Store Connect and inside the app (paywall footer and Settings). They are not repeated here, so nothing with a placeholder can be pasted into the store by mistake.
+Terms of Use (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+Privacy Policy: https://apps-site-six.vercel.app/apps/offrecord/privacy

@@ -77,6 +77,9 @@ targets:
         # Plain-language, on-device promises; review reads these (PLAN.md §5).
         NSMicrophoneUsageDescription: OffRecord records the session with the microphone. The audio is transcribed on this iPhone and is never uploaded.
         NSSpeechRecognitionUsageDescription: OffRecord transcribes on this iPhone. Speech recognition runs on the device; the audio is not uploaded.
+        # Legal pages linked from the paywall (App Review 3.1.2 requires both in-app).
+        LEGAL_TERMS_URL: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+        LEGAL_PRIVACY_URL: https://apps-site-six.vercel.app/apps/offrecord/privacy
         # Recording continues while the screen is locked (PLAN.md §4.1).
         UIBackgroundModes:
           - audio
