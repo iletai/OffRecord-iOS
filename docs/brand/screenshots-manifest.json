@@ -9,7 +9,7 @@
   },
   {
     "screenshot": "raw/02-note.png",
-    "title": "A structured note, ready to edit",
+    "title": "A note, ready to edit",
     "subtitle": "SOAP, DAP, coaching or interview",
     "gradient": "teal-ocean",
     "device": "iphone-17-pro",
@@ -17,7 +17,7 @@
   },
   {
     "screenshot": "raw/03-transcript.png",
-    "title": "Check the note against the words",
+    "title": "Check it against the words",
     "subtitle": "Transcribed on this iPhone",
     "gradient": "purple-night",
     "device": "iphone-17-pro",
