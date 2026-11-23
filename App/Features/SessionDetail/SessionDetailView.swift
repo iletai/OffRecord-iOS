@@ -4,6 +4,7 @@ import SwiftUI
 /// One session: the note and the transcript, one control apart (screens.md → Session detail).
 struct SessionDetailView: View {
     @Environment(\.modelContext) private var context
+    @Environment(AppRouter.self) private var router
     @Query private var sessions: [Session]
 
     @State private var segment: Segment = .note
@@ -40,7 +41,11 @@ struct SessionDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                ShareLink(item: exportText) {
+                Button {
+                    guard let session else { return }
+                    persistNote()
+                    router.sheet = .export(session.id)
+                } label: {
                     Image(systemName: "square.and.arrow.up")
                 }
                 .disabled(session == nil)
@@ -192,29 +197,12 @@ struct SessionDetailView: View {
         note.editedAt = .now
         try? context.save()
     }
-
-    // MARK: - Export
-
-    private var exportText: String {
-        guard let session else { return "" }
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-
-        var lines = ["\(session.title) — \(formatter.string(from: session.startedAt))", ""]
-        let sections = session.note?.sections ?? SessionNote.template(session.template)
-        for section in sections {
-            lines.append(section.heading)
-            lines.append(section.body)
-            lines.append("")
-        }
-        return lines.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
-    }
 }
 
 #Preview {
     NavigationStack {
         SessionDetailView(sessionID: UUID())
     }
+    .environment(AppRouter())
     .modelContainer(for: [Session.self, Segment.self, SessionNote.self], inMemory: true)
 }

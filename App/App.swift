@@ -2,16 +2,17 @@ import SwiftUI
 
 @main
 struct OffRecordApp: App {
-    @Environment(\.scenePhase) private var scenePhase
-    @State private var hasSubscription = false
+    @State private var settings = AppSettings()
+    @State private var subscriptions = SubscriptionManager()
 
     var body: some Scene {
         WindowGroup {
             RootView()
-                .environment(\.isPro, hasSubscription)
-                .subscriptionStatusTask(for: Store.groupID) { state in
-                    guard case .success(let statuses) = state else { return }
-                    hasSubscription = statuses.contains { $0.state == .subscribed || $0.state == .inGracePeriod }
+                .environment(settings)
+                .environment(subscriptions)
+                .task {
+                    // Entitlement and products come from the App Store; nothing is cached elsewhere.
+                    await subscriptions.load()
                 }
         }
         .modelContainer(for: [Session.self, Segment.self, SessionNote.self])

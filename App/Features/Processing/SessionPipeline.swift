@@ -11,7 +11,7 @@ enum SessionPipeline {
         var failure: String?
     }
 
-    static func process(session: Session, context: ModelContext) async -> Outcome {
+    static func process(session: Session, context: ModelContext, retention: AudioRetention) async -> Outcome {
         session.status = .processing
         try? context.save()
 
@@ -45,15 +45,35 @@ enum SessionPipeline {
 
         context.insert(SessionNote(sections: sections, session: session))
 
-        // Keep the audio only when transcription failed, so the user still has the recording.
+        // Keep the audio only when transcription failed, so the user still has the recording;
+        // otherwise apply the retention the user picked in Settings.
         if outcome.transcribed || transcript.isEmpty == false {
-            deleteAudio(named: session.audioFileName)
-            session.audioFileName = nil
+            if retention == .immediately {
+                deleteAudio(named: session.audioFileName)
+                session.audioFileName = nil
+                session.audioExpiresAt = nil
+            } else {
+                session.audioExpiresAt = retention == .day ? Date.now.addingTimeInterval(24 * 60 * 60) : nil
+            }
         }
 
         session.status = outcome.failure == nil ? .ready : .failed
         try? context.save()
         return outcome
+    }
+
+    /// Deletes recordings whose 24-hour window has passed (Settings → Keep audio → 24 hours).
+    static func pruneExpiredAudio(in context: ModelContext, now: Date = .now) {
+        let sessions = (try? context.fetch(FetchDescriptor<Session>())) ?? []
+        var changed = false
+        for session in sessions {
+            guard let expiry = session.audioExpiresAt, expiry <= now else { continue }
+            deleteAudio(named: session.audioFileName)
+            session.audioFileName = nil
+            session.audioExpiresAt = nil
+            changed = true
+        }
+        if changed { try? context.save() }
     }
 
     /// Removes every recording but keeps notes (Settings → Delete all audio).
@@ -62,6 +82,7 @@ enum SessionPipeline {
         for session in sessions {
             deleteAudio(named: session.audioFileName)
             session.audioFileName = nil
+            session.audioExpiresAt = nil
         }
         try? context.save()
     }

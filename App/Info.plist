@@ -31,9 +31,9 @@
 	<key>LEGAL_TERMS_URL</key>
 	<string>https://www.apple.com/legal/internet-services/itunes/dev/stdeula/</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>OffRecord records the session with the microphone. The audio is transcribed on this iPhone and is never uploaded.</string>
+	<string>OffRecord records the session on this iPhone so it can be transcribed here. Audio is never uploaded.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>OffRecord transcribes on this iPhone. Speech recognition runs on the device; the audio is not uploaded.</string>
+	<string>OffRecord uses on-device speech recognition to turn your recording into a transcript. Audio never leaves this iPhone.</string>
 	<key>SUBSCRIPTION_GROUP_ID</key>
 	<string>$(SUBSCRIPTION_GROUP_ID)</string>
 	<key>UIBackgroundModes</key>
