@@ -3,35 +3,28 @@ import SwiftUI
 
 /// Root screen: every session on this iPhone, newest first, with the record action pinned to the bottom.
 struct LibraryView: View {
-    @Environment(\.modelContext) private var context
+    @Environment(AppRouter.self) private var router
     @Query(sort: \Session.startedAt, order: .reverse) private var sessions: [Session]
 
     @State private var filter: SessionTemplate?
-    @State private var isRecordingPresented = false
 
     private var visibleSessions: [Session] {
         LibraryList.filter(sessions, template: filter)
     }
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    header
-                    filterBar
-                    content
-                }
-                .padding(.bottom, Theme.Metric.sectionGap)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                header
+                filterBar
+                content
             }
-            .background(Theme.page)
-            .safeAreaInset(edge: .bottom) { recordButton }
-            .toolbar(.hidden, for: .navigationBar)
+            .padding(.bottom, Theme.Metric.sectionGap)
         }
-        .fullScreenCover(isPresented: $isRecordingPresented) {
-            RecordingView { recording in
-                save(recording)
-            }
-        }
+        .background(Theme.page)
+        .safeAreaInset(edge: .bottom) { recordButton }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .navigationBar)
     }
 
     private var header: some View {
@@ -89,19 +82,16 @@ struct LibraryView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.top, 40)
             } else {
-                LazyVStack(alignment: .leading, spacing: 0, pinnedViews: []) {
+                LazyVStack(alignment: .leading, spacing: 0) {
                     ForEach(groups) { group in
                         sectionHeader(group.title)
                         ForEach(group.sessions) { session in
-                            NavigationLink(value: session) {
-                                SessionRow(session: session)
-                            }
-                            .buttonStyle(.plain)
+                            SessionRow(session: session)
+                                .contentShape(Rectangle())
+                                .onTapGesture { router.push(.session(session.id)) }
+                                .accessibilityAddTraits(.isButton)
                         }
                     }
-                }
-                .navigationDestination(for: Session.self) { session in
-                    SessionDetailPlaceholder(session: session)
                 }
             }
         }
@@ -127,13 +117,14 @@ struct LibraryView: View {
             .font(.subheadline)
             .foregroundStyle(Theme.secondaryLabel)
         }
+        .frame(maxWidth: 280, alignment: .leading)
         .padding(.horizontal, Theme.Metric.screenMargin)
         .padding(.top, 48)
     }
 
     private var recordButton: some View {
         Button {
-            isRecordingPresented = true
+            router.cover = .recording(filter ?? .soap)
         } label: {
             Label(
                 String(localized: "library.newSession", defaultValue: "New session"),
@@ -149,25 +140,6 @@ struct LibraryView: View {
         .padding(.horizontal, Theme.Metric.screenMargin)
         .padding(.bottom, 8)
         .background(.bar)
-    }
-
-    private func save(_ recording: RecordingResult) {
-        let session = Session(
-            title: defaultTitle(),
-            startedAt: recording.startedAt,
-            duration: recording.duration,
-            audioFileName: recording.fileURL.lastPathComponent,
-            template: filter ?? .soap,
-            status: .ready
-        )
-        context.insert(session)
-        try? context.save()
-    }
-
-    private func defaultTitle() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        return String(localized: "session.defaultTitle", defaultValue: "Session \(formatter.string(from: .now))")
     }
 }
 
@@ -211,27 +183,7 @@ struct SessionRow: View {
     }
 }
 
-/// Placeholder until the note/transcript screen exists; shows what the session captured.
-struct SessionDetailPlaceholder: View {
-    let session: Session
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(session.title).font(.title2.bold())
-            Text("\(session.template.filterLabel) · \(DurationText.short(session.duration))")
-                .font(.subheadline)
-                .foregroundStyle(Theme.secondaryLabel)
-            Text("Transcript and note arrive in the next build.")
-                .font(.body)
-                .foregroundStyle(Theme.secondaryLabel)
-            Spacer()
-        }
-        .padding(Theme.Metric.screenMargin)
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
 #Preview {
-    LibraryView()
+    RootView()
         .modelContainer(for: [Session.self, Segment.self, SessionNote.self], inMemory: true)
 }

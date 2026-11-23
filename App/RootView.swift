@@ -11,7 +11,7 @@ struct RootView: View {
             content: { ContentView() },
             destination: { AppRouteView(route: $0) },
             sheet: { AppSheetView(sheet: $0) },
-            cover: { _ in EmptyView() }
+            cover: { AppCoverView(cover: $0) }
         )
     }
 }

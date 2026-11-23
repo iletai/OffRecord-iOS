@@ -4,6 +4,7 @@ import SwiftData
 /// One recorded session. Audio, transcript and note are local only: the app never uploads them.
 @Model
 final class Session {
+    @Attribute(.unique) var id = UUID()
     var title: String
     var tag: String
     var startedAt: Date
