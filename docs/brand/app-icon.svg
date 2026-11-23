@@ -1,6 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
-  <!-- Placeholder master: replace the artwork, keep 1024x1024 full-bleed (Apple applies the mask). -->
-  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1f6feb"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs>
-  <rect width="1024" height="1024" fill="url(#g)"/>
-  <circle cx="512" cy="512" r="250" fill="#fff" opacity=".9"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-label="OffRecord app icon">
+  <title>OffRecord — app icon (background layer + foreground layer)</title>
+  <!-- Layer 1: background. Full bleed, no transparency, no gradient. -->
+  <g id="background">
+    <rect width="1024" height="1024" fill="#0B0F14"/>
+  </g>
+  <!-- Layer 2: foreground. A recording ring cut by one bar: nothing leaves, nothing is kept open.
+       Two shapes only, so the mark still reads at 40pt. -->
+  <g id="foreground" fill="none" stroke-linecap="round">
+    <circle cx="512" cy="512" r="188" stroke="#FFFFFF" stroke-width="72"/>
+    <line x1="351" y1="673" x2="673" y2="351" stroke="#A91D22" stroke-width="78"/>
+  </g>
 </svg>
