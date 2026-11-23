@@ -1,0 +1,42 @@
+name: Screenshots (capture only)
+
+# Captures the App Store set on the simulator and keeps it as an artifact. Nothing is uploaded to App Store Connect.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: screenshots
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - name: Generate project
+        run: |
+          which xcodegen || brew install xcodegen
+          xcodegen generate
+      - name: Capture screenshots (no upload)
+        run: bundle exec fastlane screenshots capture:true upload:false --env prod
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_CONTENT_BASE64: ${{ secrets.ASC_KEY_CONTENT_BASE64 }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      - name: Keep raw captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-raw-${{ github.sha }}
+          path: fastlane/screenshots/
+          if-no-files-found: warn
+          retention-days: 14
