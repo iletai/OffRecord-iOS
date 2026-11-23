@@ -1,1 +1,1 @@
-keyword,app
+therapy,soap note,dap note,progress note,transcription,private,coach,counselor,on device

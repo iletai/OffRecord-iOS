@@ -1,1 +1,34 @@
-Full description: what the app does, for whom, key features.
+OffRecord turns a session into a note without the recording ever being sent off your iPhone.
+
+Record the conversation. When you stop, OffRecord transcribes the audio on the device, then writes a structured note you can read and edit. Audio, transcript and note stay in local storage. There is no account to create, no sync, no analytics and no upload — the app has no server to send anything to.
+
+BUILT FOR CONFIDENTIAL CONVERSATIONS
+For therapists, counselors, coaches, consultants and interviewers who work one to one and keep notes about people who would not want them read. OffRecord runs on the phone it is installed on, so there is no server holding a copy of your sessions.
+
+WHAT YOU GET
+• On-device transcription as soon as you stop, with a progress line that names the segment it is on
+• A structured note from a template: SOAP, DAP, coaching recap or interview notes
+• Note and transcript one control apart, so you can check the summary against what was said
+• Export to PDF, Markdown or plain text when you decide to share
+• A Face ID lock you can switch on, so the library closes when the phone leaves your hand
+• Audio retention you choose: delete the audio as soon as the note is saved, keep it for a day, or keep it
+• Filter the library by template
+
+HOW IT WORKS
+The microphone records locally. Speech recognition runs on this iPhone. The note is assembled on this iPhone too, which is why note generation needs a device that supports Apple Intelligence. The app sends nothing to us: no login, no cloud, no third-party SDK. Purchases go through Apple, and a device backup you have enabled is handled by iOS, not by the app.
+
+WHAT IT DOES NOT DO
+• It does not capture calls or audio from Zoom, Meet, Teams or the phone — iOS does not allow an app to record another app's audio. Use it for sessions in the room with you.
+• It does not separate speakers. Two or more people in one conversation produce one transcript.
+• It does not write a note on devices without Apple Intelligence: recording and transcription still work, and you can fill the template in by hand.
+• It does not record past 90 minutes in one session; the recorder stops and saves at that limit.
+• It transcribes English only in this version.
+• It is not evidence. A note is a record you keep for yourself, not a document to hand to a court.
+• It does not sync between devices, and there is no team or EHR integration in this version.
+
+PRICING
+OffRecord Pro is a subscription: $19.99 per month or $149.99 per year, with a 7-day free trial on both for new subscribers. Recording a new session needs Pro, and the 30-second sample note during setup is the only free use. If a subscription lapses, the notes and recordings you already have stay readable and exportable. Payment goes through your Apple ID, and you can cancel in Settings any time. Prices shown in the app come from the App Store and may differ by region.
+
+If you record sessions with clients, check the consent rules where you practice. OffRecord reduces the risk of a data leak; it does not replace your legal or professional obligations.
+
+The privacy policy and terms of use are linked in App Store Connect and inside the app (paywall footer and Settings). They are not repeated here, so nothing with a placeholder can be pasted into the store by mistake.

@@ -1,1 +1,14 @@
-Explain anything the reviewer needs: demo account, sample data, sandbox purchase steps.
+OffRecord records, transcribes and summarizes sessions entirely on the device. There is no account, no login and no server; nothing is uploaded, so no demo account is needed.
+
+Permissions: the second onboarding step asks for microphone and speech recognition access, before the first session. If microphone access is denied the app blocks recording and shows a screen with an Open Settings button (Settings > Privacy & Security > Microphone). If speech recognition is denied the app still records and keeps the audio as a session; the transcript and the note are what you lose, and that screen says so. Onboarding step 3 shows a consent acknowledgement before the first recording: the app is for sessions where the user has the consent required where they practice.
+
+Subscriptions: OffRecord Pro has two auto-renewable products in one group, OffRecord Pro:
+- com.iletai.offrecord.pro.monthly — $19.99 per month
+- com.iletai.offrecord.pro.annual — $149.99 per year
+Both carry a 7-day introductory trial for new subscribers. The paywall is presented after the 30-second sample note in onboarding, and again from the trial or expired banner at the top of the library. Recording needs Pro, so a fresh install reaches the paywall after the sample note; existing sessions stay readable if a subscription lapses. Settings shows the current plan read-only with Manage and Restore purchases.
+
+Note generation needs Apple Intelligence: iPhone 15 Pro or later, iOS 26, device language English (US), region supported, and Apple Intelligence switched on in Settings. On any other device the app says structured notes are unavailable on this iPhone and offers "Fill template manually"; recording, transcription and manual notes still work, so the app is fully testable there. The sample note in onboarding step 3 is a prebuilt example, not a live generation, so it appears on every device.
+
+To test a session: buy or restore Pro (a sandbox purchase is free of charge), tap New session, allow the microphone, speak for a few seconds, tap Stop. The app transcribes and, on a device with Apple Intelligence, produces a structured note. Recording needs a real device: the Simulator has no audio input, but the recorder opens and every permission and paywall screen is reachable. If the trial is not available to your Apple ID, buy either plan in the sandbox; sandbox purchases are free of charge.
+
+Export produces a PDF, Markdown or plain-text file and hands it to the system share sheet; the reviewer chooses the destination (Files, Mail, and so on).
