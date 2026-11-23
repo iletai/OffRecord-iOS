@@ -1,50 +1,42 @@
 [
   {
-    "screenshot": "raw/01-home.png",
-    "title": "Transform Your Sleep",
-    "subtitle": "AI-powered sleep experiments",
-    "gradient": "purple-night",
+    "screenshot": "raw/01-library.png",
+    "title": "Every session, on this iPhone",
+    "subtitle": "Nothing leaves the device",
+    "gradient": "deep-space",
     "device": "iphone-17-pro",
-    "filename": "01-home.png"
+    "filename": "01-library.png"
   },
   {
-    "screenshot": "raw/02-stats.png",
-    "title": "Deep Insights",
-    "subtitle": "Understand your sleep patterns",
+    "screenshot": "raw/02-note.png",
+    "title": "A note, ready to edit",
+    "subtitle": "SOAP, DAP, coaching or interview",
     "gradient": "teal-ocean",
     "device": "iphone-17-pro",
-    "filename": "02-stats.png"
+    "filename": "02-note.png"
   },
   {
-    "screenshot": "raw/03-detail.png",
-    "title": "Every Detail Matters",
-    "subtitle": "Hour-by-hour breakdown",
-    "gradient": "rose-gold",
+    "screenshot": "raw/03-transcript.png",
+    "title": "Check it against the words",
+    "subtitle": "Transcribed on this iPhone",
+    "gradient": "purple-night",
     "device": "iphone-17-pro",
-    "filename": "03-detail.png"
+    "filename": "03-transcript.png"
   },
   {
     "screenshot": "raw/04-settings.png",
-    "title": "Your Preferences",
-    "subtitle": "Personalized for you",
+    "title": "Lock it with Face ID",
+    "subtitle": "Keep audio only as long as you choose",
     "gradient": "morning-sky",
     "device": "iphone-17-pro",
     "filename": "04-settings.png"
   },
   {
-    "screenshot": "raw/05-onboarding.png",
-    "title": "Get Started in Seconds",
-    "subtitle": "No setup required",
-    "gradient": "coral-burst",
+    "screenshot": "raw/05-export.png",
+    "title": "Export when you decide",
+    "subtitle": "PDF, Markdown or plain text",
+    "gradient": "rose-gold",
     "device": "iphone-17-pro",
-    "filename": "05-onboarding.png"
-  },
-  {
-    "screenshot": "raw/06-paywall.png",
-    "title": "Unlock Everything",
-    "subtitle": "Premium features await",
-    "gradient": "deep-space",
-    "device": "iphone-17-pro",
-    "filename": "06-paywall.png"
+    "filename": "05-export.png"
   }
 ]
