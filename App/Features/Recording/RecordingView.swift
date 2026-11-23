@@ -1,31 +1,37 @@
+import SwiftData
 import SwiftUI
 
-/// What a finished recording hands back to the library.
-struct RecordingResult {
-    let startedAt: Date
-    let duration: TimeInterval
-    let fileURL: URL
-}
-
 /// Full-screen recorder: one timer, one waveform, one stop control (DESIGN.md §4).
+/// Stopping keeps the cover on screen while the on-device pipeline runs, then opens the session.
 struct RecordingView: View {
     var template: SessionTemplate = .soap
-    var onFinish: (RecordingResult) -> Void
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var context
+    @Environment(AppRouter.self) private var router
     @State private var recorder = SessionRecorder()
     @State private var startedAt: Date?
     @State private var errorMessage: String?
+    @State private var phase: Phase = .recording
 
-    private let levelTimer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+    private enum Phase {
+        case recording
+        case processing
+    }
+
+    private let levelTimer = Timer.publish(every: 0.05, on: .main, in: .common).autoconnect()
 
     var body: some View {
         VStack(spacing: 0) {
             topBar
             Spacer(minLength: 0)
-            timer
-            waveform
-                .padding(.top, 24)
+            if phase == .recording {
+                timer
+                waveform
+                    .padding(.top, 24)
+            } else {
+                processing
+            }
             Spacer(minLength: 0)
             controls
             footer
@@ -41,12 +47,14 @@ struct RecordingView: View {
     private var topBar: some View {
         HStack {
             Button(String(localized: "recording.discard", defaultValue: "Discard")) {
-                recorder.discard()
-                dismiss()
+                discard()
             }
             .font(.body)
             .foregroundStyle(Theme.secondaryLabel)
+            .disabled(phase != .recording)
+
             Spacer()
+
             Text(template.filterLabel)
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(Theme.secondaryLabel)
@@ -75,6 +83,20 @@ struct RecordingView: View {
             .accessibilityHidden(true)
     }
 
+    private var processing: some View {
+        VStack(spacing: 16) {
+            ProgressView()
+                .controlSize(.large)
+            Text(String(localized: "processing.transcribing", defaultValue: "Transcribing on this iPhone"))
+                .font(.headline)
+            Text(String(localized: "processing.drafting", defaultValue: "Writing the note"))
+                .font(.subheadline)
+                .foregroundStyle(Theme.secondaryLabel)
+        }
+        .multilineTextAlignment(.center)
+        .accessibilityElement(children: .combine)
+    }
+
     private var controls: some View {
         HStack(spacing: 40) {
             Button {
@@ -87,11 +109,12 @@ struct RecordingView: View {
                     .background(.ultraThinMaterial, in: .circle)
             }
             .buttonStyle(.plain)
+            .disabled(phase != .recording)
             .accessibilityLabel(recorder.isPaused
                 ? String(localized: "recording.resume", defaultValue: "Resume")
                 : String(localized: "recording.pause", defaultValue: "Pause"))
 
-            Button(action: stop) {
+            Button(action: stopAndProcess) {
                 ZStack {
                     Circle().fill(Theme.recording).frame(width: 72, height: 72)
                     RoundedRectangle(cornerRadius: 4)
@@ -100,6 +123,7 @@ struct RecordingView: View {
                 }
             }
             .buttonStyle(.plain)
+            .disabled(phase != .recording)
             .accessibilityLabel(String(localized: "recording.stop", defaultValue: "Stop"))
         }
         .padding(.bottom, 40)
@@ -112,19 +136,20 @@ struct RecordingView: View {
                     .font(.footnote)
                     .foregroundStyle(Theme.recording)
                     .multilineTextAlignment(.center)
-            } else {
+            } else if phase == .recording {
                 Label {
-                    Text(String(
-                        localized: "recording.status",
-                        defaultValue: recorder.isPaused
-                            ? "Paused · audio stays on this iPhone"
-                            : "Recording · audio stays on this iPhone"
-                    ))
+                    Text(recorder.isPaused
+                        ? String(localized: "recording.statusPaused", defaultValue: "Paused · audio stays on this iPhone")
+                        : String(localized: "recording.status", defaultValue: "Recording · audio stays on this iPhone"))
                 } icon: {
                     Image(systemName: "lock.shield")
                 }
                 .font(.footnote)
                 .foregroundStyle(Theme.secondaryLabel)
+            } else {
+                Text(String(localized: "recording.footer", defaultValue: "Audio is deleted after the note is created"))
+                    .font(.footnote)
+                    .foregroundStyle(Theme.secondaryLabel)
             }
         }
         .frame(maxWidth: .infinity)
@@ -140,13 +165,45 @@ struct RecordingView: View {
         }
     }
 
-    private func stop() {
+    private func stopAndProcess() {
         guard let finished = recorder.stop(), let startedAt else {
             dismiss()
             return
         }
-        onFinish(RecordingResult(startedAt: startedAt, duration: finished.duration, fileURL: finished.url))
+        let session = Session(
+            title: defaultTitle(at: startedAt),
+            startedAt: startedAt,
+            duration: finished.duration,
+            audioFileName: finished.url.lastPathComponent,
+            template: template,
+            status: .processing
+        )
+        context.insert(session)
+        try? context.save()
+
+        phase = .processing
+        Task {
+            await SessionPipeline.process(session: session, context: context)
+            close(then: session.id)
+        }
+    }
+
+    private func discard() {
+        recorder.discard()
         dismiss()
+    }
+
+    private func close(then sessionID: UUID?) {
+        router.cover = nil
+        if let sessionID {
+            router.push(.session(sessionID))
+        }
+    }
+
+    private func defaultTitle(at date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        return String(localized: "session.defaultTitle", defaultValue: "Session \(formatter.string(from: date))")
     }
 }
 
@@ -177,5 +234,6 @@ struct WaveformView: View {
 }
 
 #Preview {
-    RecordingView { _ in }
+    RecordingView()
+        .modelContainer(for: [Session.self, Segment.self, SessionNote.self], inMemory: true)
 }
