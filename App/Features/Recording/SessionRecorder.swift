@@ -7,6 +7,9 @@ import Observation
 @MainActor
 @Observable
 final class SessionRecorder {
+    /// Hard stop, stated in the store description: the recorder saves and stops at 90 minutes.
+    static let maxDuration: TimeInterval = 90 * 60
+
     private(set) var isRecording = false
     private(set) var isPaused = false
     private(set) var startedAt: Date?

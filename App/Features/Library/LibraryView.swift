@@ -4,6 +4,8 @@ import SwiftUI
 /// Root screen: every session on this iPhone, newest first, with the record action pinned to the bottom.
 struct LibraryView: View {
     @Environment(AppRouter.self) private var router
+    @Environment(AppSettings.self) private var settings
+    @Environment(SubscriptionManager.self) private var subscriptions
     @Query(sort: \Session.startedAt, order: .reverse) private var sessions: [Session]
 
     @State private var filter: SessionTemplate?
@@ -28,12 +30,27 @@ struct LibraryView: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(String(localized: "library.title", defaultValue: "Sessions"))
-                .font(.largeTitle.bold())
-            Text(String(localized: "library.subtitle", defaultValue: "Stored on this iPhone only"))
-                .font(.subheadline)
-                .foregroundStyle(Theme.secondaryLabel)
+        HStack(alignment: .firstTextBaseline) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(String(localized: "library.title", defaultValue: "Sessions"))
+                    .font(.largeTitle.bold())
+                Text(String(localized: "library.subtitle", defaultValue: "Stored on this iPhone only"))
+                    .font(.subheadline)
+                    .foregroundStyle(Theme.secondaryLabel)
+            }
+            Spacer(minLength: 8)
+            Button {
+                router.push(.settings)
+            } label: {
+                Image(systemName: "gearshape")
+                    .font(.body.weight(.medium))
+                    .foregroundStyle(Theme.secondaryLabel)
+                    .frame(width: 44, height: 44)
+                    .background(.ultraThinMaterial, in: .circle)
+                    .contentShape(Circle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(String(localized: "settings.title", defaultValue: "Settings"))
         }
         .padding(.horizontal, Theme.Metric.screenMargin)
         .padding(.top, 8)
@@ -124,11 +141,16 @@ struct LibraryView: View {
 
     private var recordButton: some View {
         Button {
-            router.cover = .recording(filter ?? .soap)
+            // Recording a new session needs Pro (store description → Pricing); the paywall explains why.
+            if subscriptions.isPro {
+                router.cover = .recording(filter ?? settings.defaultTemplate)
+            } else {
+                router.sheet = .paywall
+            }
         } label: {
             Label(
                 String(localized: "library.newSession", defaultValue: "New session"),
-                systemImage: "mic.fill"
+                systemImage: subscriptions.isPro ? "mic.fill" : "lock.fill"
             )
             .font(.headline)
             .foregroundStyle(.white)
@@ -185,5 +207,7 @@ struct SessionRow: View {
 
 #Preview {
     RootView()
+        .environment(AppSettings())
+        .environment(SubscriptionManager())
         .modelContainer(for: [Session.self, Segment.self, SessionNote.self], inMemory: true)
 }

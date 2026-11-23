@@ -22,10 +22,12 @@ enum AppSheet: Identifiable, Hashable, Sendable {
 
 /// Full-screen covers. Recording is the only one that may appear over the library in 1.0.
 enum AppCover: Identifiable, Hashable, Sendable {
+    case onboarding
     case recording(SessionTemplate)
 
     var id: String {
         switch self {
+        case .onboarding: "onboarding"
         case .recording(let template): "recording-\(template.rawValue)"
         }
     }
@@ -39,7 +41,7 @@ struct AppRouteView: View {
     var body: some View {
         switch route {
         case .session(let id): SessionDetailView(sessionID: id)
-        case .settings: Text("Settings")
+        case .settings: SettingsView()
         }
     }
 }
@@ -50,7 +52,7 @@ struct AppSheetView: View {
     var body: some View {
         switch sheet {
         case .paywall: PaywallView()
-        case .export: Text("Export")
+        case .export(let id): ExportSheet(sessionID: id)
         }
     }
 }
@@ -60,6 +62,7 @@ struct AppCoverView: View {
 
     var body: some View {
         switch cover {
+        case .onboarding: OnboardingView()
         case .recording(let template): RecordingView(template: template)
         }
     }

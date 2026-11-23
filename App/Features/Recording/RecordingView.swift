@@ -9,6 +9,7 @@ struct RecordingView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
     @Environment(AppRouter.self) private var router
+    @Environment(AppSettings.self) private var settings
     @State private var recorder = SessionRecorder()
     @State private var startedAt: Date?
     @State private var errorMessage: String?
@@ -40,7 +41,13 @@ struct RecordingView: View {
         .background(Theme.page)
         .task { await start() }
         .onDisappear { recorder.discard() }
-        .onReceive(levelTimer) { _ in recorder.sample() }
+        .onReceive(levelTimer) { _ in
+            recorder.sample()
+            // The recorder stops and saves at 90 minutes, as the store description states.
+            if phase == .recording, elapsed >= SessionRecorder.maxDuration {
+                stopAndProcess()
+            }
+        }
         .interactiveDismissDisabled()
     }
 
@@ -156,6 +163,7 @@ struct RecordingView: View {
         .padding(.bottom, 12)
     }
 
+    @MainActor
     private func start() async {
         do {
             try await recorder.start()
@@ -165,6 +173,7 @@ struct RecordingView: View {
         }
     }
 
+    @MainActor
     private func stopAndProcess() {
         guard let finished = recorder.stop(), let startedAt else {
             dismiss()
@@ -183,16 +192,18 @@ struct RecordingView: View {
 
         phase = .processing
         Task {
-            await SessionPipeline.process(session: session, context: context)
+            _ = await SessionPipeline.process(session: session, context: context, retention: settings.audioRetention)
             close(then: session.id)
         }
     }
 
+    @MainActor
     private func discard() {
         recorder.discard()
         dismiss()
     }
 
+    @MainActor
     private func close(then sessionID: UUID?) {
         router.cover = nil
         if let sessionID {
@@ -200,6 +211,7 @@ struct RecordingView: View {
         }
     }
 
+    @MainActor
     private func defaultTitle(at date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"

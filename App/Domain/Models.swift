@@ -11,6 +11,8 @@ final class Session {
     var duration: TimeInterval
     /// File name inside Application Support/Audio; nil once the recording was deleted.
     var audioFileName: String?
+    /// When retention is `day`: the audio is pruned at the next launch after this date.
+    var audioExpiresAt: Date?
     var templateRaw: String
     var statusRaw: String
 
@@ -26,6 +28,7 @@ final class Session {
         startedAt: Date = .now,
         duration: TimeInterval = 0,
         audioFileName: String? = nil,
+        audioExpiresAt: Date? = nil,
         template: SessionTemplate,
         status: SessionStatus = .recording
     ) {
@@ -34,6 +37,7 @@ final class Session {
         self.startedAt = startedAt
         self.duration = duration
         self.audioFileName = audioFileName
+        self.audioExpiresAt = audioExpiresAt
         self.templateRaw = template.rawValue
         self.statusRaw = status.rawValue
     }
