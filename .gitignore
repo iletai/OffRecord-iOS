@@ -28,3 +28,9 @@ build/
 
 ## Local xcconfig secrets
 Config/Secrets.xcconfig
+
+# App Review contact is personal data: it is passed from .env at release time, never committed.
+fastlane/metadata/review_information/first_name.txt
+fastlane/metadata/review_information/last_name.txt
+fastlane/metadata/review_information/email_address.txt
+fastlane/metadata/review_information/phone_number.txt
