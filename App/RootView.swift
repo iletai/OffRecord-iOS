@@ -17,6 +17,9 @@ struct RootView: View {
         )
         .modifier(AppLockModifier())
         .task {
+            #if DEBUG
+            DemoSeed.install(into: context, settings: settings)
+            #endif
             // 24-hour audio windows are pruned at launch, before anything reads the library.
             SessionPipeline.pruneExpiredAudio(in: context)
             // Onboarding is the only way in on a fresh install; it ends by showing the paywall.
