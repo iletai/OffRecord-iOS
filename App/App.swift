@@ -14,5 +14,6 @@ struct OffRecordApp: App {
                     hasSubscription = statuses.contains { $0.state == .subscribed || $0.state == .inGracePeriod }
                 }
         }
+        .modelContainer(for: [Session.self, Segment.self, SessionNote.self])
     }
 }
