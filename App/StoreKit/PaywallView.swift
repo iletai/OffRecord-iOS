@@ -1,16 +1,12 @@
 import StoreKit
 import SwiftUI
 
-/// Apple's paywall: subscriptions of the group + restore button, lifetime unlock underneath.
+/// Apple's paywall: the two subscriptions of the group (monthly, annual) + restore button.
+/// No lifetime product exists on ASC for 1.0, so no third row may be rendered.
 struct PaywallView: View {
     var body: some View {
-        VStack(spacing: 0) {
-            SubscriptionStoreView(groupID: Store.groupID)
-                .storeButton(.visible, for: .restorePurchases)
-            ProductView(id: Store.lifetimeID)
-                .productViewStyle(.compact)
-                .padding()
-        }
+        SubscriptionStoreView(groupID: Store.groupID)
+            .storeButton(.visible, for: .restorePurchases)
     }
 }
 
