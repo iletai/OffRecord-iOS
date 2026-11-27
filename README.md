@@ -27,3 +27,14 @@ fastlane: `bundle exec fastlane <lane> --env dev|staging|prod` (lanes from [ilet
 `feature/*` → PR into `develop` → `release/x.y.z` (version bump) → PR into `main` → tag `x.y.z` on the merge commit → merge `main` back into `develop`. Hotfix: `hotfix/x.y.z` from `main`. Conventional commits.
 
 Store text lives in `fastlane/metadata/`; screenshots come from `bundle exec fastlane screenshots --env prod`.
+
+---
+
+## License
+
+Copyright (c) 2026 Le Quang Trong Tai. All rights reserved.
+
+This repository is proprietary and source-available for viewing only.
+No permission is granted to use, copy, modify, distribute, or create
+derivative works from this code without prior written permission.
+See [LICENSE](LICENSE) for the full terms.
