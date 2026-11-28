@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   ci:
-    uses: iletai/ios-shared/.github/workflows/ios-ci.yml@main
+    uses: iletai/ios-shared/.github/workflows/ios-ci.yml@ci/harden-shared-workflows
     with:
       xcode-version: latest-stable
     secrets: inherit
